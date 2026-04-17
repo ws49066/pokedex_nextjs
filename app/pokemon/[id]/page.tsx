@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import StatsDisplay from '@/app/components/StatsDisplay';
+import { useLanguage } from '@/app/i18n/LanguageContext';
 
 const typeColors: Record<string, string> = {
   normal: 'bg-gray-400',
@@ -30,6 +31,7 @@ const typeColors: Record<string, string> = {
 const getTypeColor = (type: string) => typeColors[type] || 'bg-gray-400';
 
 export default function PokemonDetailPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const id = params.id as string;
   const { pokemon, loading, error } = usePokemonDetail(id);
@@ -39,7 +41,7 @@ export default function PokemonDetailPage() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Carregando detalhes...</p>
+          <p className="mt-4 text-gray-600">{t('loading')}</p>
         </div>
       </div>
     );
@@ -49,9 +51,9 @@ export default function PokemonDetailPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="text-red-600 font-semibold mb-4">❌ Erro ao carregar pokémon</p>
+          <p className="text-red-600 font-semibold mb-4">{t('error')}</p>
           <Link href="/" className="text-blue-600 hover:underline font-semibold">
-            ← Voltar para a lista
+            {t('back')}
           </Link>
         </div>
       </div>
@@ -64,7 +66,7 @@ export default function PokemonDetailPage() {
       <header className="bg-white shadow-md sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link href="/" className="text-blue-600 hover:underline font-semibold mb-4 inline-flex items-center gap-2">
-            ← Voltar
+            {t('back')}
           </Link>
           <h1 className="text-3xl sm:text-4xl font-bold capitalize text-gray-800 mt-2">
             {pokemon.name}
@@ -96,7 +98,7 @@ export default function PokemonDetailPage() {
             {/* Types */}
             <div className="bg-white rounded-xl shadow-lg p-6 fade-in" style={{ animationDelay: '100ms' }}>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                🏷️ Tipos
+                🏷️ {t('types')}
               </h2>
               <div className="flex flex-wrap gap-3">
                 {pokemon.types.map((type) => (
@@ -115,15 +117,15 @@ export default function PokemonDetailPage() {
             {/* Physical Info */}
             <div className="bg-white rounded-xl shadow-lg p-6 fade-in" style={{ animationDelay: '150ms' }}>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                📏 Informações Físicas
+                📏 {t('physicalInfo')}
               </h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border-l-4 border-blue-600">
-                  <p className="text-gray-600 text-sm font-semibold">Altura</p>
+                  <p className="text-gray-600 text-sm font-semibold">{t('height')}</p>
                   <p className="text-3xl font-bold text-blue-600 mt-1">{(pokemon.height / 10).toFixed(1)}m</p>
                 </div>
                 <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border-l-4 border-purple-600">
-                  <p className="text-gray-600 text-sm font-semibold">Peso</p>
+                  <p className="text-gray-600 text-sm font-semibold">{t('weight')}</p>
                   <p className="text-3xl font-bold text-purple-600 mt-1">{(pokemon.weight / 10).toFixed(1)}kg</p>
                 </div>
               </div>
@@ -132,7 +134,7 @@ export default function PokemonDetailPage() {
             {/* Abilities */}
             <div className="bg-white rounded-xl shadow-lg p-6 fade-in" style={{ animationDelay: '200ms' }}>
               <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                ⚡ Habilidades
+                ⚡ {t('abilities')}
               </h2>
               <div className="flex flex-wrap gap-2">
                 {pokemon.abilities.map((ability) => (
@@ -151,7 +153,7 @@ export default function PokemonDetailPage() {
         {/* Stats */}
         <div className="bg-white rounded-xl shadow-xl p-8 mt-8 fade-in" style={{ animationDelay: '250ms' }}>
           <h2 className="text-2xl font-bold text-gray-800 mb-8 flex items-center gap-2">
-            📊 Estatísticas Base
+            📊 {t('stats')}
           </h2>
           <StatsDisplay stats={pokemon.stats} />
         </div>
