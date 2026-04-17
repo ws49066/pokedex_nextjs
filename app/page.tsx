@@ -12,15 +12,32 @@ export default function Home() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white shadow-md border-b-4 border-blue-500">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-4">
-          {/* Title and Language Selector in one line */}
-          <div className="flex items-center justify-between gap-4">
+          {/* Mobile: Menu on top, Title below */}
+          <div className="md:hidden flex flex-col items-center gap-2 mb-2">
+            {/* Language Selector */}
+            <div>
+              <LanguageSelector />
+            </div>
+
             {/* Title and Emojis */}
-            <div className="flex-1 flex items-center justify-center gap-1 sm:gap-3 flex-wrap">
-              <span className="text-2xl sm:text-4xl">🎮</span>
-              <h1 className="text-xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <div className="flex items-center justify-center gap-1 flex-wrap">
+              <span className="text-2xl">🎮</span>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 {t('title')}
               </h1>
-              <span className="text-2xl sm:text-4xl">⚡</span>
+              <span className="text-2xl">⚡</span>
+            </div>
+          </div>
+
+          {/* Desktop: Title and Language Selector in one line */}
+          <div className="hidden md:flex items-center justify-between gap-4">
+            {/* Title and Emojis */}
+            <div className="flex-1 flex items-center justify-center gap-1 sm:gap-3 flex-wrap">
+              <span className="text-4xl">🎮</span>
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {t('title')}
+              </h1>
+              <span className="text-4xl">⚡</span>
             </div>
 
             {/* Language Selector */}
