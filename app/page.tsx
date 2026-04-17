@@ -1,6 +1,6 @@
 'use client';
 
-import PokemonGrid from './components/PokemonGrid';
+import PokemonGridWithSearch from './components/PokemonGridWithSearch';
 
 export default function Home() {
   return (
@@ -23,7 +23,7 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <PokemonGrid limit={20} offset={0} />
+        <PokemonGridWithSearch limit={20} offset={0} />
       </main>
 
       {/* Footer */}
