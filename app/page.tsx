@@ -1,6 +1,6 @@
 'use client';
 
-import PokemonGridWithSearch from './components/PokemonGridWithSearch';
+import InfiniteScrollGrid from './components/InfiniteScrollGrid';
 
 export default function Home() {
   return (
@@ -23,7 +23,7 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <PokemonGridWithSearch limit={20} offset={0} />
+        <InfiniteScrollGrid initialLimit={20} />
       </main>
 
       {/* Footer */}
