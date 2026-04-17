@@ -56,7 +56,7 @@ export default function SearchBar({ onSearch, onTypeFilter }: SearchBarProps) {
     <div className="space-y-6 mb-8">
       {/* Search Input */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
+        <label className="block text-base font-bold text-gray-800 mb-3">
           🔍 {t('search')}
         </label>
         <input
@@ -64,13 +64,13 @@ export default function SearchBar({ onSearch, onTypeFilter }: SearchBarProps) {
           placeholder={t('searchPlaceholder')}
           value={searchQuery}
           onChange={handleSearch}
-          className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          className="w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-white text-gray-800 placeholder-gray-500 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
         />
       </div>
 
       {/* Type Filter */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-3">
+        <label className="block text-base font-bold text-gray-800 mb-3">
           ⚡ {t('filterByType')}
         </label>
         <div className="flex flex-wrap gap-2">

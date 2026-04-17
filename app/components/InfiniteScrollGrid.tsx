@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Pokemon, PokemonListResponse } from '@/app/types/pokemon';
-import { fetchPokemonList, fetchPokemonDetail } from '@/app/services/pokemonService';
+import { Pokemon } from '@/app/types/pokemon';
+import { fetchPokemonList, fetchPokemonDetail, searchPokemon } from '@/app/services/pokemonService';
 import PokemonCard from './PokemonCard';
 import SearchBar from './SearchBar';
 import { LoadingCard } from './Loading';
@@ -21,8 +21,11 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [loadingMore, setLoadingMore] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<Pokemon[]>([]);
   const observerTarget = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initial load
   useEffect(() => {
@@ -52,7 +55,7 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
 
   // Load more pokemon
   const loadMorePokemon = useCallback(async () => {
-    if (!hasMore || loadingMore) return;
+    if (!hasMore || loadingMore || searchQuery) return;
 
     try {
       setLoadingMore(true);
@@ -71,13 +74,44 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
     } finally {
       setLoadingMore(false);
     }
-  }, [initialLimit, hasMore, loadingMore]);
+  }, [initialLimit, hasMore, loadingMore, searchQuery]);
+
+  // Search pokemon when query changes
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    searchTimeoutRef.current = setTimeout(async () => {
+      try {
+        const results = await searchPokemon(searchQuery);
+        setSearchResults(results);
+      } catch (err) {
+        console.error('Error searching pokemon:', err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300);
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [searchQuery]);
 
   // Intersection observer for infinite scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
+        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading && !searchQuery) {
           loadMorePokemon();
         }
       },
@@ -89,18 +123,12 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
     }
 
     return () => observer.disconnect();
-  }, [hasMore, loadingMore, loading, loadMorePokemon]);
+  }, [hasMore, loadingMore, loading, loadMorePokemon, searchQuery]);
 
-  // Filter pokemon
-  const filteredPokemon = allPokemon.filter((p) => {
-    const matchesSearch =
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.id.toString().includes(searchQuery);
-
-    const matchesType = selectedType === '' || p.types.includes(selectedType);
-
-    return matchesSearch && matchesType;
-  });
+  // Filter pokemon - use search results when searching, otherwise filter loaded pokemon
+  const displayPokemon = searchQuery.trim()
+    ? searchResults.filter((p) => selectedType === '' || p.types.includes(selectedType))
+    : allPokemon.filter((p) => selectedType === '' || p.types.includes(selectedType));
 
   if (error) {
     return (
@@ -117,13 +145,13 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
     <>
       <SearchBar onSearch={setSearchQuery} onTypeFilter={setSelectedType} />
 
-      {loading ? (
+      {(loading || isSearching) ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {Array.from({ length: initialLimit }).map((_, i) => (
             <LoadingCard key={i} />
           ))}
         </div>
-      ) : filteredPokemon.length === 0 ? (
+      ) : displayPokemon.length === 0 ? (
         <div className="flex items-center justify-center min-h-64">
           <div className="text-center">
             <p className="text-gray-600 mb-2">😅 {t('noResults')}</p>
@@ -137,10 +165,14 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
       ) : (
         <>
           <div className="mb-4 text-gray-600">
-            {t('showing')} <span className="font-bold">{filteredPokemon.length}</span> {t('pokemon')}
+            {searchQuery.trim() ? (
+              <>{searchResults.length > 50 ? '50+' : searchResults.length} {t('pokemon')} {t('found')} </>
+            ) : (
+              <>{t('showing')} <span className="font-bold">{displayPokemon.length}</span> {t('pokemon')}</>
+            )}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filteredPokemon.map((p) => (
+            {displayPokemon.map((p) => (
               <PokemonCard key={p.id} pokemon={p} />
             ))}
           </div>
@@ -155,19 +187,21 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
           )}
 
           {/* Intersection observer target */}
-          <div ref={observerTarget} className="py-8 text-center">
-            {hasMore && !loadingMore && (
-              <button
-                onClick={loadMorePokemon}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition"
-              >
-                {t('showMore')}
-              </button>
-            )}
-            {!hasMore && filteredPokemon.length > 0 && (
-              <p className="text-gray-600">{t('allLoaded')}</p>
-            )}
-          </div>
+          {!searchQuery.trim() && (
+            <div ref={observerTarget} className="py-8 text-center">
+              {hasMore && !loadingMore && (
+                <button
+                  onClick={loadMorePokemon}
+                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition"
+                >
+                  {t('showMore')}
+                </button>
+              )}
+              {!hasMore && displayPokemon.length > 0 && (
+                <p className="text-gray-600">{t('allLoaded')}</p>
+              )}
+            </div>
+          )}
         </>
       )}
     </>
