@@ -14,19 +14,23 @@ export default function LanguageSelector() {
 
   return (
     <div className="flex items-center gap-2">
-      {languages.map((lang) => (
-        <button
-          key={lang.code}
-          onClick={() => setLanguage(lang.code)}
-          className={`w-12 h-12 rounded-full flex items-center justify-center text-3xl transition-all duration-300 border-2 ${\n            language === lang.code
-              ? 'border-blue-600 bg-blue-50 shadow-lg scale-110'
-              : 'border-gray-200 bg-white hover:border-blue-300 hover:scale-105'
-          }`}
-          title={lang.name}
-        >
-          {lang.flag}
-        </button>
-      ))}
+      {languages.map((lang) => {
+        const isActive = language === lang.code;
+        const baseClasses = 'w-12 h-12 rounded-full flex items-center justify-center text-3xl transition-all duration-300 border-2';
+        const activeClasses = 'border-blue-600 bg-blue-50 shadow-lg scale-110';
+        const inactiveClasses = 'border-gray-200 bg-white hover:border-blue-300 hover:scale-105';
+        
+        return (
+          <button
+            key={lang.code}
+            onClick={() => setLanguage(lang.code)}
+            className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
+            title={lang.name}
+          >
+            {lang.flag}
+          </button>
+        );
+      })}
     </div>
   );
 }
