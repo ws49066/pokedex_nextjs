@@ -6,12 +6,14 @@ import { fetchPokemonList, fetchPokemonDetail } from '@/app/services/pokemonServ
 import PokemonCard from './PokemonCard';
 import SearchBar from './SearchBar';
 import { LoadingCard } from './Loading';
+import { useLanguage } from '@/app/i18n/LanguageContext';
 
 interface InfiniteScrollGridProps {
   initialLimit?: number;
 }
 
 export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScrollGridProps) {
+  const { t } = useLanguage();
   const [allPokemon, setAllPokemon] = useState<Pokemon[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true);
@@ -104,7 +106,7 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
     return (
       <div className="flex items-center justify-center min-h-64">
         <div className="text-center">
-          <p className="text-red-600 font-semibold mb-2">❌ Erro ao carregar pokémon</p>
+          <p className="text-red-600 font-semibold mb-2">{t('error')}</p>
           <p className="text-gray-600">{error}</p>
         </div>
       </div>
@@ -124,10 +126,10 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
       ) : filteredPokemon.length === 0 ? (
         <div className="flex items-center justify-center min-h-64">
           <div className="text-center">
-            <p className="text-gray-600 mb-2">😅 Nenhum pokémon encontrado com esses filtros</p>
+            <p className="text-gray-600 mb-2">😅 {t('noResults')}</p>
             {searchQuery || selectedType ? (
               <p className="text-sm text-gray-500">
-                Busca: "{searchQuery}" | Tipo: {selectedType || 'Todos'}
+                {t('search')}: "{searchQuery}" | {t('filterByType')}: {selectedType || 'Todos'}
               </p>
             ) : null}
           </div>
@@ -135,7 +137,7 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
       ) : (
         <>
           <div className="mb-4 text-gray-600">
-            Mostrando <span className="font-bold">{filteredPokemon.length}</span> pokémon
+            {t('showing')} <span className="font-bold">{filteredPokemon.length}</span> {t('pokemon')}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredPokemon.map((p) => (
@@ -159,11 +161,11 @@ export default function InfiniteScrollGrid({ initialLimit = 20 }: InfiniteScroll
                 onClick={loadMorePokemon}
                 className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition"
               >
-                Carregar mais pokémon
+                {t('showMore')}
               </button>
             )}
             {!hasMore && filteredPokemon.length > 0 && (
-              <p className="text-gray-600">✅ Todos os pokémon foram carregados!</p>
+              <p className="text-gray-600">{t('allLoaded')}</p>
             )}
           </div>
         </>

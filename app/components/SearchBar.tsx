@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useLanguage } from '@/app/i18n/LanguageContext';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -35,6 +36,7 @@ const typeColors: Record<string, string> = {
 };
 
 export default function SearchBar({ onSearch, onTypeFilter }: SearchBarProps) {
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<string>('');
 
@@ -55,11 +57,11 @@ export default function SearchBar({ onSearch, onTypeFilter }: SearchBarProps) {
       {/* Search Input */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">
-          🔍 Buscar Pokémon
+          🔍 {t('search')}
         </label>
         <input
           type="text"
-          placeholder="Digite o nome ou ID do Pokémon..."
+          placeholder={t('searchPlaceholder')}
           value={searchQuery}
           onChange={handleSearch}
           className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
@@ -69,7 +71,7 @@ export default function SearchBar({ onSearch, onTypeFilter }: SearchBarProps) {
       {/* Type Filter */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-3">
-          ⚡ Filtrar por Tipo
+          ⚡ {t('filterByType')}
         </label>
         <div className="flex flex-wrap gap-2">
           {pokemonTypes.map((type) => (
