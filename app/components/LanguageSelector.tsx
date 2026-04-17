@@ -17,7 +17,7 @@ export default function LanguageSelector() {
       {languages.map((lang) => {
         const isActive = language === lang.code;
         const baseClasses = 'w-12 h-12 rounded-full flex items-center justify-center text-3xl transition-all duration-300 border-2';
-        const activeClasses = 'border-blue-600 bg-blue-50 shadow-lg scale-110';
+        const activeClasses = 'border-blue-600 bg-blue-50 shadow-lg scale-110 text-blue-600';
         const inactiveClasses = 'border-gray-200 bg-white hover:border-blue-300 hover:scale-105';
         
         return (
