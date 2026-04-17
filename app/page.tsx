@@ -11,21 +11,21 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white shadow-md border-b-4 border-blue-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 relative">
-          {/* Top Row: Language Selector */}
-          <div className="flex justify-end mb-4 absolute top-4 right-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-6">
+          {/* Language Selector - Top Right */}
+          <div className="flex justify-end mb-3 sm:mb-4">
             <LanguageSelector />
           </div>
 
           {/* Title and Subtitle */}
-          <div className="flex items-center justify-center gap-2 sm:gap-3">
-            <span className="text-3xl sm:text-4xl">🎮</span>
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <div className="flex items-center justify-center gap-1 sm:gap-3 flex-wrap">
+            <span className="text-2xl sm:text-4xl">🎮</span>
+            <h1 className="text-xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               {t('title')}
             </h1>
-            <span className="text-3xl sm:text-4xl">⚡</span>
+            <span className="text-2xl sm:text-4xl">⚡</span>
           </div>
-          <p className="text-center text-gray-600 text-sm sm:text-base mt-2">
+          <p className="text-center text-gray-600 text-xs sm:text-base mt-2">
             {t('subtitle')}
           </p>
         </div>
